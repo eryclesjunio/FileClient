@@ -22,8 +22,8 @@ public class Cliente {
         new Cliente("127.0.0.1", 12345).executa();
     }
 
-    private String host;
-    private int porta;
+    private final String host;
+    private final int porta;
 
     public Cliente (String host, int porta) {
         this.host = host;
@@ -36,7 +36,7 @@ public class Cliente {
             
             // thread para receber mensagens do servidor
             Recebedor r = new Recebedor(cliente.getInputStream());
-            new Thread(r).start();
+            new Thread(r).start(); //Inicia a Thread
             
             // lê msgs do teclado e manda pro servidor
             Scanner teclado = new Scanner(System.in);
@@ -44,7 +44,7 @@ public class Cliente {
             while (teclado.hasNextLine()) {
                 saida.println(teclado.nextLine());
             }
-            
+            //fecha streams
             saida.close();
             teclado.close();
         }

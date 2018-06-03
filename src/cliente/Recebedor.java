@@ -16,12 +16,15 @@ import java.io.InputStream;
  */
 public class Recebedor implements Runnable {
     
-    public final static String FILE_RECEIVED = "C:\\Users\\user\\Desktop\\arquivos_to_receive\\code_received7.txt";
-    public final static int FILE_SIZE = 6022386;
-    private InputStream servidor;
+    private final static String FILE_RECEIVED = "C:\\Users\\user\\Desktop\\arquivos_to_receive\\codigoAgenda.txt";
+    private final static int FILE_SIZE = 6022386;
+    private final InputStream cliente;
 
-    public Recebedor(InputStream servidor) {
-        this.servidor = servidor;
+    /**
+     * @param cliente define o canal de entrada da aplicação cliente
+     */
+    public Recebedor(InputStream cliente) {
+        this.cliente = cliente;
     }
 
     @Override
@@ -35,14 +38,15 @@ public class Recebedor implements Runnable {
         try {
           // recebe arquivo em bytes
           byte [] bytearray  = new byte [FILE_SIZE];
-          InputStream input = this.servidor;
+          InputStream input = this.cliente;
           fos = new FileOutputStream(FILE_RECEIVED);
           
-          /*memórias são otimizados para trabalhar com blocos de dados.
-          Para isso, existem classes como BufferedInputStream e BufferedOutputStream que utilizam o 
-          padrão de projetos decorator para "decorar" um stream e automaticamente gerenciar a leitura
-          e escrita em blocos através de um buffer interno.*/
-          
+         /*memórias são otimizados para trabalhar com blocos de dados.
+          *Para isso, existem classes como BufferedInputStream e BufferedOutputStream que utilizam o 
+          *padrão de projetos decorator para "decorar" um stream e automaticamente gerenciar a leitura
+          *e escrita em blocos através de um buffer interno.
+          */
+         
           bos = new BufferedOutputStream(fos);
           bytesRead = input.read(bytearray,0,bytearray.length);//Lendo os bytes
           current = bytesRead; //Quantidade de bytes lidos
@@ -50,12 +54,12 @@ public class Recebedor implements Runnable {
           do {
              bytesRead = input.read(bytearray, current, (bytearray.length-current));
              if(bytesRead >= 0) current += bytesRead;
-          } while(bytesRead > -1);
+          } while(bytesRead > -1); //enquanto houver elementos para serem lidos, retorna números naturais, e retorna -1 no final.
 
           bos.write(bytearray, 0 , current);
           bos.flush();
-          System.out.println("Arquivo " + FILE_RECEIVED
-              + " foi baixado (" + current + " bytes lidos)");
+          System.out.println("Arquivo " + FILE_RECEIVED + " foi baixado (" + current + " bytes lidos)");
+          
         }
         catch (IOException ex) {
             ex.printStackTrace();
